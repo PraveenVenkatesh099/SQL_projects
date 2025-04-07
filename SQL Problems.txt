@@ -1,0 +1,597 @@
+SQL Problems
+SELECT and FROM
+1. Retrieve all columns from the employees table.
+SELECT * FROM Employees;
+
+2. Retrieve only the name and age columns from the customers table.
+SELECT Name,Age FROM Employees;
+
+3. Get distinct city values from the customers table.
+SELECT DISTINCT city FROM Customers;
+
+4. Retrieve the first 5 rows from the products table.
+SELECT * FROM Products LIMIT 5;
+
+WHERE Clause
+5. Find all employees whose salary is greater than 50,000.
+SELECT * FROM Employees
+WHERE Salary > 50000;
+
+6. Get customers from the customers table who live in "New York".
+SELECT customers FROM Customers
+WHERE City = 'New York';
+
+7. Find all orders placed after January 1, 2023.
+SELECT * FROM Orders
+WHERE order_date > '2023-01-01'; (assuming the format doesn't include timestamp)
+
+8. Retrieve employees who have the job title "Manager".
+SELECT employees FROM employees
+WHERE job_title ='Manager';
+
+9. Find products where the price is between 100 and 500.
+SELECT * FROM Products
+WHERE price BETWEEN 100 AND 500;
+
+10. Get all customers whose names start with "A".
+SELECT * FROM customer
+WHERE names LIKE 'A%';
+
+ORDER BY Clause
+11. Retrieve employees ordered by salary in descending order.
+SELECT * FROM Employees
+ORDER BY salary DESC;
+
+12. Retrieve customers sorted by their last name alphabetically.
+SELECT * FROM Customers
+ORDER BY Last_name;
+
+13. Retrieve products sorted by price in ascending order.
+SELECT * FROM products
+ORDER BY price;
+
+LIMIT and OFFSET
+14. Retrieve the top 3 highest-paid employees.
+SELECT * FROM Employees
+ORDER BY Salary DESC LIMIT 3;
+
+15. Get the second-highest paid employee (use LIMIT and OFFSET).
+SELECT * FROM employees
+ORDER BY salary DESC OFFSET 1 LIMIT 1; 
+
+Aggregate Functions
+16. Count the total number of employees.
+SELECT COUNT(*) FROM employees;
+
+17. Find the average price of products.
+SELECT AVG(Price) FROM Products;
+
+18. Get the highest salary from the employees table.
+SELECT MAX(Salary) FROM Employees;
+
+19. Find the lowest product price in the products table.
+SELECT MIN(Price) FROM Products;
+ 
+20. Calculate the total revenue from the orders table.
+SELECT SUM(Total_revenue) FROM Orders;
+
+GROUP BY and HAVING
+21. Get the number of employees in each department.
+SELECT department, COUNT(*) AS employee_count 
+FROM Employees GROUP BY department;
+
+22. Find the total sales for each customer.
+SELECT customer_id, SUM(Total_sales) AS Total_sales
+FROM orders GROUP BY customer_id;
+
+23. Find the average salary for each job title.
+SELECT job_title, AVG(salary) AS average_salary 
+FROM Employees GROUP BY job_title;
+
+24. Find the department with the highest number of employees.
+SELECT department FROM Employees
+GROUP BY department ORDER BY COUNT(*) DESC LIMIT 1;
+
+25. Retrieve customers who have placed more than 5 orders.
+SELECT customer_id, COUNT(*) AS order_count
+FROM orders GROUP BY customer_id
+HAVING COUNT(*) > 5;
+
+JOINS
+26. Retrieve employees and their corresponding department names.
+SELECT employees.name, department.name FROM Employees
+INNER JOIN department ON employees.department_id = department.department_id;
+
+27. Get a list of all orders with customer names.
+SELECT orders.order_id, customer.name FROM orders
+INNER JOIN customers ON orders.customer_id = customer.customer_id;
+
+28. Retrieve product names and their corresponding order details.
+SELECT products.product_name, order_details.order_id FROM order_details
+INNER JOIN products ON order_details.product_id = products.product_id;
+
+29. List all employees along with their managers' names.
+SELECT e.naem AS Employee, m.name AS Manager FROM employees e
+LEFT JOIN employees m ON e.manager_id = m.employee_id;
+
+30. Find employees who do not belong to any department.
+SELECT * FROM employees
+WHERE department_id IS NULL;
+
+INNER JOIN, LEFT JOIN, RIGHT JOIN
+31. Get all customers who have placed an order (INNER JOIN).
+SELECT customers.customer_id, customer.name, orders.order_id FROM customers
+INNER JOIN orders ON customers.customer_id = orders.customer_id;
+
+32. List all employees and their assigned projects (LEFT JOIN).
+SELECT employees.employee_id, employees.name, projects.project_name FROM employees
+LEFT JOIN projects ON employees.employee_id = projects.employee_id;
+
+33. Retrieve all customers and their orders, even if they haven't placed one (RIGHT JOIN).
+SELECT customers.customer_id, customer.name, orders.order_id FROM customers
+RIGHT JOIN orders ON customer.customer_id = orders.customer_id;
+
+34. Find employees without a manager (LEFT JOIN with NULL).
+SELECT employees.employee_id, employees.name, managers.manager_id FROM employees
+LEFT JOIN employees AS managers ON employees.manager_id = manager.employee_id
+WHERE managers.employee_id IS NULL;
+ 
+35. Find orders without a corresponding product entry (RIGHT JOIN with NULL).
+SELECT orders.order_id, orders.product_id, products.product_name FROM orders
+RIGHT JOIN products ON orders.product_id = products.product_id
+WHERE orders,product_id IS NULL;
+
+Subqueries
+36. Get employees whose salary is above the average salary.
+SELECT employee_id, name, salary
+FROM employees
+WHERE salary > (SELECT AVG(salary) FROm employees);
+
+37. Retrieve products that have never been ordered.
+SELECT product_id, name
+FROM products
+WHERE product_id NOT IN (SELECT DISTINCT product_id FROM orders);
+
+38. Find customers who placed orders in the last 30 days.
+SELECT customer_id, name
+FROM customers
+WHERE customer_id IN(
+	SELECT DISTINCT customer_id
+	FROM orders
+	WHERE order_date >= NOW() - INVERVAL 30 DAY
+);
+
+39. Find employees who earn more than their department's average salary.
+SELECT employee_id, name, salary, department_id
+FROM employees e1
+WHERE salary > (SELECT AVG(salary)
+		FROM employees e2
+		WHERE e2.department_id = e1.department_id);
+
+40. Retrieve customers who ordered the most expensive product.
+SELECT customer_id, name
+FROM customers
+WHERE customer_id IN (SELECT DISTINCT customer_id
+			FROM orders
+			WHERE product_id = (
+			SELECT product_id
+			FROM products
+			ORDER BY price DESC
+			LIMIT 1));
+
+Self JOIN
+41. Find pairs of employees who work in the same department.
+SELECT e1.employe_id AS employee1_id, e1.name AS employee1_name,
+	e2.employee_id AS employee2_id, e2.name AS employee2_name,
+	e1.department_id
+FROM employees e1
+JOIN employees e2 ON e1.department_id = e2.department_id AND e1.employee_id < e2.employee_id;
+
+42. Retrieve employees and their direct managers from the same table.
+SELECT e1.employee_id, e1.name AS employee_name,
+	e2.employee_id AS manager_id, e2.name AS manager_name
+FROM employees e1
+LEFT JOIN employees e2
+ON e1.manager_id = e2.employee_id;
+
+43. Find customers who referred other customers.
+SELECT c1.customer_id AS referrer_id, c1.name AS referrer_name,
+	c2.customer_id AS referred_id, c2.name AS referred_name
+FROM customer c1
+JOIN customer c2
+ON c1.customer_id = c2.referrer_id;
+
+44. Find products that belong to the same category.
+SELECT p1.product_id AS product1_id, p1.name AS product1_name,
+	p2.product_id AS product2_id, p2.name AS product2_id,
+	p1.category_id
+FROM product p1
+JOIN product p2
+ON p1.category_id = p2.category_id
+AND p1.product_id < p2.product_id;
+
+45. Get employees who have the same salary as someone else.
+SELECT e1.employee_id, e1.name AS employee1_name, e1.salary, 
+       e2.employee_id AS employee2_id, e2.name AS employee2_name
+FROM employees e1
+JOIN employees e2 
+ON e1.salary = e2.salary 
+AND e1.employee_id < e2.employee_id;
+
+CASE and Conditional Statements
+46. Classify employees into salary ranges ("Low", "Medium", "High").
+SELECT employee_id, name, salary,
+	CASE
+	    WHEN salary < 50000 THEN 'Low'
+	    WHEN salary BETWEEN 50000 AND 100000 THEN 'Medium'
+	    ELSE 'High'
+	END AS salary_range
+FROM employees;
+
+47. Display "Active" or "Inactive" based on the last login date of users.
+SELECT user_id, name, last_login,
+	CASE
+	    WHEN last_login >= NOW() - INTERVAL 30 DAY THEN 'Active'
+	    ELSE 'Inactive'
+	END AS status
+FROM users;
+
+48. Assign product categories based on price ranges.
+SELECT product_id, name, price,
+	CASE
+	    WHEN price < 20 THEN 'Budget'
+    	    WHEN price BETWEEN 20 AND 100 THEN 'Standard'
+	    ELSE 'Premium'
+	END AS category
+FROM products;
+
+49. Show "Pass" or "Fail" for student grades.
+SELECT student_id, name, grade,
+	CASE
+	    WHEN grade >= 70 THEN 'Pass'
+	    ELSE 'Fail'
+	END AS result
+FROM students;
+
+50. Return "High Value" for customers who spent over $5000.
+SELECT customer_id, name, total_spent,
+	CASE
+	    WHEN total_spent > 5000 THEN 'High Value'
+	    ELSE 'Regular'
+	END AS customer_type
+FROM customer;
+
+String Functions
+51. Get the first three characters of all product names.
+SELECT product_id, name, LEFT(name,3) AS short_name
+FROm products;
+
+52. Convert all employee names to uppercase.
+SELECT employee_id, UPPER(name) AS uppercase_name
+FROM employees;
+
+53. Remove spaces from the beginning and end of customer names.
+SELECT customer_id, TRIM(name) AS trimmed_name
+FROM customers;
+
+54. Concatenate first and last names of employees.
+SELECT employee_id, CONCAT(first_name,' ',last_name) AS full_name
+FROM employees;
+
+55. Replace "New York" with "NY" in the address column.
+SELECT customer_id, REPLACE(address, 'New York', 'NY') AS updated_address
+FROM customers;
+
+Date Functions
+56. Get the current date.
+SELECT CURDATE() AS current_date;
+
+57. Find customers who signed up in the last 6 months.
+SELECT customer_id, name, signup_date
+FROM customers
+WHERE signup_date >= NOW() - INTERVAL 6 MONTH;
+
+58. Extract the year from the order_date column.
+SELECT order_id, order_date, YEAR(order_date) AS order_year
+FROM orders;
+
+59. Calculate the age of employees based on their birth date.
+SELECT employee_id, name, birth_date,
+       TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) AS age
+FROM employees;
+60. Get the name of the weekday for each order date.
+SELECT order_id, order_date, DAYNAME(order_date) AS weekday
+FROM orders;
+
+Mathematical Functions
+61. Round all product prices to 2 decimal places.
+SELECT prodcut_id, name, ROUND(price, 2) AS rounded_price
+FROM products;
+
+62. Find the square root of all product weights.
+SELECT product_id, name, weight, SQRT(weight) AS sqrt_weight
+FROm products;
+
+63. Calculate the tax amount (price * 0.1) for each product.
+SELECT product_id, name, price, ROUND(price * 0.1, 2) AS tax_amount
+FROM products;
+
+64. Find the absolute value of stock changes.
+SELECT product_id, name, stock_change,
+       ABS(stock_change) AS absolute_stock_change
+FROM inventory;
+
+65. Get a random discount percentage between 5% and 20%.
+SELECT product_id, name,
+	ROUND(RAND() *(20 - 5) + 5, 2) AS discount_percentage
+FROM products;
+
+Advanced Intermediate SQL Problems
+EXISTS and NOT EXISTS
+66. Find employees who have at least one assigned project.
+SELECT e.employee_id, e.name
+FROM employees e
+WHERE EXISTS (SELECT 1 FROM projects p
+	      WHERE p.employee_id = e.employee_id);
+
+67. Retrieve customers who have never placed an order.
+SELECT c.customer_id, c.name
+FROM customer c
+WHERE NOT EXISTS(SELECT 1 FROM orders o
+	         WHERE o.customer_id = c.customer_id);
+
+68. Find departments with no employees.
+SELECT d.department_id, d.name
+FROM departments d
+WHERE NOT EXISTS (SELECT 1 FROM employees e
+		  WHERE e.department_id = d.department_id);
+
+69. Get products that are currently not in stock.
+SELECT p.producd_id, p.name,
+FROM products p
+WHERE NOT EXISTS(SELECT 1 FROM inventory i
+		 WHERE i.product_id = p.product_id AND i.stock_product > 0);
+
+70. Find suppliers that do not supply any product.
+SELECT s.suppliers, s.name 
+FROM suppliers s
+WHERE NOT EXISTS (SELECT 1 FROM products p
+		  WHERE p.supplier_id = s.supplier_id);
+
+UNION and UNION ALL
+71. Combine customers from two different tables (e.g., retail_customers and wholesale_customers).
+SELECT customer_id, name, 'Retail' AS customer_type FROM retail_customers
+UNION
+SELECT customer_id, name, 'Wholesale' AS customer_type FROM wholesale_customers;
+
+72. Retrieve employees and contractors as a single list.
+SELECT employee_id, name, 'Employee' AS type FROM employees
+UNION
+SELECT contractor_id, name, 'contractor' AS type FROM contractors;
+
+73. Get a list of all unique cities from both customers and suppliers.
+SELECT customer_id, name, 'customer' AS type FROM customers
+UNION
+SELECT supplier_id, name, 'supplier' As type FROM suppliers;
+
+74. Combine product names from two different product categories.
+SELECT product_name FROM products WHERE category_id = 1
+UNION
+SELECT product_name FROM products WHERE category_id = 2;
+
+75. Retrieve orders from 2023 and 2024 as a single dataset
+SELECT order_id, customer_id, order_date FROM orders WHERE YEAR(order_date) = 2023
+UNION ALL
+SELECT order_id, customer_id, order_date FROM orders WHERE YEAR(order_date) = 2024;
+
+Common Table Expressions (CTEs)
+76. Create a CTE to list employees earning above 70,000.
+WITH HighSalaryEmployees AS (
+	SELECT employee_id, name, salary
+	FROM employees
+	WHERE salary > 70000
+)
+SELECT * FROM employees;
+
+77. Use a CTE to get the total sales per customer.
+WITH CustomerSales AS (
+	SELECT customer_id, SUM(total_amount) AS total_spent
+	FROM orders
+	GROUP BY customer_id
+)
+SELECT * FROM CustomerSales;
+
+78. Create a recursive CTE to find an employee hierarchy.
+WITH RECURSIVE EmployeeHierarchy AS (
+	SELECT employee_id, name, manager_id, 1 AS level
+	FROM employees
+	WHERE manager_id IS NULL
+
+	UNION ALL
+
+	SELECT e.employee_id, e.name, e.manager_id, eh.level + 1
+	FROM employees e
+	INNER JOIN EmployeeHierarchy eh ON e.manager_id = eh.employee_id	
+)
+SELECT * FROM EmployeeHierarchy;
+ 
+79. Use a CTE to rank products by sales volume.
+WITH ProductSales AS (
+	SELECT product_id, name, SUM(Quantity) AS total_sold
+	FROM order_details
+	GROUP BY product_id, name
+)
+SELECT *, RANK() OVER (ORDER BY total_sold DESC) AS rank
+FROM ProductSales;
+
+80. Retrieve all orders placed in the last 30 days using a CTE.
+WITH RecentOrders AS (
+	SELECT order_id, customer_id, order_date
+	FROM orders
+	WHERE order_date >= NOW() - INTERVAL 30 DAY 
+)
+SELECT * FROM RecentOrers;
+
+Window Functions
+81. Rank employees based on their salary using RANK().
+SELECT employee_id, name, salary,
+	RANK() OVER (ORDER BY salary DESC) AS salary_rank
+FROM employees;
+
+82. Use DENSE_RANK() to group employees by salary.
+SELECT employee_id, name, salary,
+	DENSE_RANK() OVER (ORDER BY salary DESC) AS salary_rank
+FROM employees;
+
+83. Use ROW_NUMBER() to assign unique row numbers.
+SELECT employee_id, name, salary,
+	ROW_NUMBER() OVER (ORDER BY salary DESC) AS row_num
+FROM employees;
+
+84. Find the running total of sales by order date.
+SELECT order_id, order_date, total_amount,
+	SUM(total_amount) OVER (ORDER BY order_date) AS running_total
+FROM orders;
+
+85. Calculate the average salary per department using OVER()
+SELECT employee_id, name, department_id, salary,
+	AVG(salary) OVER (PARTITION BY department_id) AS avg_department_salary
+FROM employees;
+
+Pivoting Data
+86. Convert order statuses (Pending, Completed, Cancelled) into columns.
+SELECT customer_id,
+       COUNT(CASE WHEN status = 'Pending' THEN 1 END) AS Pending,
+       COUNT(CASE WHEN status = 'Completed' THEN 1 END) AS Completed,
+       COUNT(CASE WHEN status = 'Cancelled' THEN 1 END) AS Cancelled
+FROM orders
+GROUP BY customer_id;
+
+87. Display monthly sales as separate columns.
+SELECT customer_id.
+	SUM(CASE WHEN MONTH(order_date) = 1 THEN total_amount ELSE 0 END) AS Jan,
+	SUM(CASE WHEN MONTH(order_date) = 2 THEN total_amount ELSE 0 END) AS Feb,
+	SUM(CASE WHEN MONTH(order_date) = 3 THEN total_amount ELSE 0 END) AS Mar,
+	--We can add all months if we want
+FROM orders
+GROUP BY customer_id;
+
+88. Pivot customer satisfaction ratings into percentages.
+SELECT 
+    COUNT(CASE WHEN rating = 1 THEN 1 END) * 100.0 / COUNT(*) AS rating_1_percent,
+    COUNT(CASE WHEN rating = 2 THEN 1 END) * 100.0 / COUNT(*) AS rating_2_percent,
+    COUNT(CASE WHEN rating = 3 THEN 1 END) * 100.0 / COUNT(*) AS rating_3_percent
+FROM customer_feedback;
+
+89. Convert employee job titles into a single column per department.
+SELECT department_id,
+	GROUP_CONCAT(DISTINCT job_title ORDER BY job_title SEPARATOR ',') AS job_titles
+FROM employees
+GROUP BY department_id;
+
+90. Show product sales data in a pivot format.
+SELECT product_id,
+       SUM(CASE WHEN YEAR(order_date) = 2023 THEN quantity ELSE 0 END) AS sales_2023,
+       SUM(CASE WHEN YEAR(order_date) = 2024 THEN quantity ELSE 0 END) AS sales_2024
+FROM order_details
+GROUP BY product_id;
+
+Stored Procedures and Triggers
+91. Write a stored procedure to get employee details by department.
+DELIMITER //
+CREATE PROCEDURE GetEmployeesByDepartment(IN dept_id INT)
+BEGIN
+     SELECT employee_id, name, salary FROM employees WHERE department_id = dept_id;
+END //
+DELIMITER ; --changing the delimiter again to semicolon(;)
+
+92. Create a stored procedure to insert a new order.
+DELIMITER //
+CREATE PROCEDURE InsertOrder(IN cust_id INT, IN amount DECIMAL(10,2))
+BEGIN
+    INSERT INTO orders (customer_id, total_amount, order_date)
+    VALUES (cust_id, amount, NOW());
+END //
+DELIMITER ;
+
+93. Write a trigger to prevent deletion of employees with active projects.
+DELIMITER //
+CREATE TRIGGER PreventEmployeeDeletion
+BEFORE DELETE ON employees
+FRO EACH ROW
+BEGIN
+    IF (SELECT COUNT(*) FROM projects WHERE employee_id = OLD.employee_id) > 0 THEN
+        SIGNAL SQLSTATE '45000'
+	SET MESSAGE_TEXT = 'Cannot delete employee with active projects';
+    END IF;
+END //
+DELIMITER ;
+
+94. Create a trigger to update stock levels after an order is placed.
+DELIMITER //
+CREATE TRIGGER UpdateStockAfterOrder
+AFTER INSERT ON order_details
+FOR EACH ROW
+BEGIN
+    UPDATE products
+    SET stock_quantity = stock_quantity - NEW.quantity
+    WHERE product_id = NEW.product_id;
+END //
+DELIMITER ;
+
+95. Write a stored procedure to increase salaries by 10% for managers.
+DELIMITER //
+CREATE PROCEDURE IncreaseManagerSalaries()
+BEGIN
+    UPDATE employees 
+    SET salary = salary * 1.10 
+    WHERE job_title = 'Manager';
+END //
+DELIMITER ;
+
+Indexes and Performance Optimization
+96. Create an index on the email column of the customers table.
+CREATE INDEX idx_email ON customer(email);
+
+97. Analyze the execution time of a query using EXPLAIN.
+EXPLAIN SELECT * FROM orders WHERE customer_id = 101;
+
+98. Optimize a slow query using indexing.
+CREATE INDEX idx_customer_orders ON orders(customer_id);
+
+99. Create a composite index on last_name and first_name.
+CREATE INDEX idx_name ON employees(last_name, first_name);
+
+100. Check the size of an index on the orders table.
+SELECT index_name, table_name, index_length 
+FROM information_schema.STATISTICS
+WHERE table_name = 'orders';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
