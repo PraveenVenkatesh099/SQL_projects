@@ -10,6 +10,7 @@ This project is a **relational database** for managing employee information, dep
 - Perform complex **SQL queries** to retrieve and analyze data
 - Establish **foreign key relationships** between tables
 - Learn how to structure normalized relational databases
+- SQL_Employee_management.docx contains solution the problems
 
 ---
 
