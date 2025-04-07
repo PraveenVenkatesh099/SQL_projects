@@ -68,7 +68,7 @@ This project simulates the backend of a library system using MySQL. It supports:
 
 ## 🔧 Setup Instructions
 
-1. Install MySQL and a client like MySQL Workbench.
+1. Install MySQL and a client like phpMyAdmin.
 2. Clone this repo and open the SQL script (`library_management.sql`).
 3. Execute step-by-step or all at once:
     - Create the database
