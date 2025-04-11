@@ -1,7 +1,10 @@
 
 # SQL Join Practice Questions
 
-This repository contains **25 SQL join practice questions** along with solutions. These examples are designed to help you strengthen your SQL skills using different types of joins such as `INNER JOIN`, `LEFT JOIN`, `RIGHT JOIN`, `FULL OUTER JOIN`, `SELF JOIN`, and more.
+This repository contains **25 SQL join practice questions** (questions 1–25) along with solutions. These examples are designed to help you strengthen your SQL skills using different types of joins such as `INNER JOIN`, `LEFT JOIN`, `RIGHT JOIN`, `FULL OUTER JOIN`, `SELF JOIN`, and more.
+
+This repository contains **25 advanced SQL subquery practice questions** (questions 26–50) with solutions. These examples focus on using scalar, correlated, nested, and EXISTS subqueries to answer complex analytical problems in SQL.
+
 
 ---
 
@@ -34,7 +37,31 @@ This repository contains **25 SQL join practice questions** along with solutions
 | 23 | Users who placed an order in the last 30 days but not before that |
 | 24 | Get order details including customer, product, and delivery info using multiple joins |
 | 25 | Use EXISTS to identify customers with multiple addresses |
-
+| 26 | Find the highest-paid employee in each department using a correlated subquery |
+| 27 | List customers who have placed orders with all available sales agents |
+| 28 | Find all products that have been ordered more than the average quantity |
+| 29 | Use a subquery to get the product with the highest revenue |
+| 30 | List departments where the average salary is higher than the company-wide average |
+| 31 | Find employees who earn more than their department’s average salary |
+| 32 | Get all customers who have placed more orders than customer X |
+| 33 | Use a subquery to find the second-highest order value |
+| 34 | Return the names of employees who have the same salary as someone in another department |
+| 35 | Get products whose price is greater than the average price in their category |
+| 36 | List employees whose salary is in the top 10% of their department |
+| 37 | Find orders placed on the same day as the customer’s birthday |
+| 38 | Find users who have reviewed every product they’ve purchased |
+| 39 | Use NOT EXISTS to list customers who have never ordered |
+| 40 | Get a list of suppliers who supply products that were never ordered |
+| 41 | Find products that are cheaper than all other products in the same category |
+| 42 | Write a subquery to find the most recent order per customer |
+| 43 | Use a scalar subquery to show the average salary next to each employee |
+| 44 | Find customers who spent more than the average customer but made fewer purchases |
+| 45 | Use a subquery to check if a product was ever sold at a discount |
+| 46 | Find employees whose salary is below the department’s median salary |
+| 47 | Use a correlated subquery to show the running total of sales per day |
+| 48 | Get all customers who have only purchased items from a single category |
+| 49 | Find orders whose total value is more than double the average order value |
+| 50 | Use a subquery in the FROM clause to aggregate sales data, then filter |
 ---
 
 ## 💡 Purpose
@@ -50,6 +77,7 @@ This project is meant for:
 ## 📄 Files
 
 - `sql_join.sql` — Contains all the queries
+- `sql_substring.sql` — Contains all subquery queries
 - `README.md` — This file, with descriptions and context
 
 ---
